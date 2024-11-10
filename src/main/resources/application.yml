@@ -1,7 +1,0 @@
-micronaut:
-  application:
-    name: ticktacktoe
-  session:
-    http:
-      cookie: true
-      header: true

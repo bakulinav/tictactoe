@@ -3,7 +3,7 @@ package dev.bakulin;
 import java.io.PrintStream;
 import java.util.Random;
 
-public class Main {
+public class SimpleTickTackToe {
 
     public static void main(String[] args) throws InterruptedException {
         String fieldMask = "123456789";
