@@ -1,13 +1,14 @@
 package dev.bakulin.ticktacktoe.controller;
 
 import dev.bakulin.ticktacktoe.dto.MoveRequest;
-import dev.bakulin.ticktacktoe.dto.MoveState;
 import dev.bakulin.ticktacktoe.model.Game;
 import dev.bakulin.ticktacktoe.model.GameSession;
 import dev.bakulin.ticktacktoe.service.GamePlayService;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -33,8 +34,8 @@ public class GamePlayController {
 
 
     @PostMapping("/move")
-    public MoveState move(@RequestHeader("X-SESSION-ID") String sessionId,
-                   MoveRequest moveRequest) { // TODO add validate
+    public Game move(@RequestHeader("X-SESSION-ID") String sessionId,
+                   @Valid @RequestBody MoveRequest moveRequest) { // TODO add validate
         log.info("session: {} accept move: {}", sessionId, moveRequest);
 
         return gamePlayService.acceptMove(sessionId, moveRequest);

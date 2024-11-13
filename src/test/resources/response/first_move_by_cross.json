@@ -1,0 +1,12 @@
+{
+  "session": "ignore",
+  "state": {
+    "status": "PLAYING",
+    "field": "X23456789",
+    "crossesMoves": "10000",
+    "zeroesMoves": "00000"
+  },
+  "opponent": null,
+  "createdAt": "ignore",
+  "updatedAt": "ignore"
+}

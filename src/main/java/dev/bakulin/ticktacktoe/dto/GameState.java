@@ -1,20 +1,19 @@
 package dev.bakulin.ticktacktoe.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import dev.bakulin.ticktacktoe.model.GameSession;
 import dev.bakulin.ticktacktoe.model.GameStatus;
 import lombok.Data;
 
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class GameState {
-    private static final String EMPTY_FIELD_STATE = "123|456|789|"; // field 3x3
+    private static final String EMPTY_FIELD_STATE = "123456789"; // field 3x3
     private static final String EMPTY_MOVES = "00000"; // no any move
 
     GameStatus status; // playing
 
     // active game
-    String field;   // init: 123|456|789|, in-action: XX3|4O6|O89|, finish: XXX|4O6|O89|
+    String field;   // init: 123456789, in-action: XX34O6O89, finish: XXX4O6O89
     String crossesMoves; // 12300
     String zeroesMoves;  // 57000
 
