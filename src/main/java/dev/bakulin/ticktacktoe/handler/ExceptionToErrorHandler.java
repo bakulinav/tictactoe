@@ -1,5 +1,6 @@
 package dev.bakulin.ticktacktoe.handler;
 
+import dev.bakulin.ticktacktoe.exception.GameplayError;
 import dev.bakulin.ticktacktoe.model.ErrorInfo;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
@@ -31,5 +32,13 @@ public class ExceptionToErrorHandler {
     @ResponseBody
     public ErrorInfo handleValidationError(MissingRequestHeaderException ex) {
         return new ErrorInfo("Required header missed", "Header is missed: " + ex.getHeaderName());
+    }
+
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(GameplayError.class)
+    @ResponseBody
+    public ErrorInfo handleGameplayError(GameplayError ex) {
+        return new ErrorInfo(ex.getError(), ex.getDetails());
     }
 }

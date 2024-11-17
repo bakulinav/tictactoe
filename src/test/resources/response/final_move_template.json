@@ -1,11 +1,12 @@
 {
   "session": "ignore",
   "state": {
-    "status": "PLAYING",
+    "status": "FINISHED",
     "field": "{field}",
     "crossesMoves": "{crosses}",
     "zeroesMoves": "{zeroes}",
-    "next": "{next}"
+    "next": "{next}",
+    "lastGameWinner": "{winner}"
   },
   "sides": {
     "host": "{host}",

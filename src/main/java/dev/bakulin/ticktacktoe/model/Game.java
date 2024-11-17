@@ -1,6 +1,5 @@
 package dev.bakulin.ticktacktoe.model;
 
-import dev.bakulin.ticktacktoe.dto.GameState;
 import lombok.Data;
 
 import java.time.ZonedDateTime;
@@ -9,12 +8,12 @@ import java.time.ZonedDateTime;
 public class Game {
     final String session;
     final GameState state;
-    String opponent;
+    final Sides sides;
     ZonedDateTime createdAt;
     ZonedDateTime updatedAt;
 
-    public static Game init(String session, GameState state) {
-        return new Game(session, state)
+    public static Game init(String session, GameState state, Sides sides) {
+        return new Game(session, state, sides)
                 .setCreatedAt(ZonedDateTime.now())
                 .setUpdatedAt(ZonedDateTime.now())
                 ;

@@ -1,11 +1,13 @@
 package dev.bakulin.ticktacktoe.controller;
 
+import dev.bakulin.ticktacktoe.dto.GameInitRequest;
 import dev.bakulin.ticktacktoe.dto.MoveRequest;
 import dev.bakulin.ticktacktoe.model.Game;
 import dev.bakulin.ticktacktoe.model.GameSession;
 import dev.bakulin.ticktacktoe.service.GamePlayService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -28,8 +30,8 @@ public class GamePlayController {
     }
 
     @PostMapping("/init")
-    public Game init() {
-        return gamePlayService.init();
+    public Game init(@RequestBody(required = false) GameInitRequest request) {
+        return gamePlayService.init(request);
     }
 
 
@@ -41,11 +43,18 @@ public class GamePlayController {
         return gamePlayService.acceptMove(sessionId, moveRequest);
     }
 
-    @GetMapping("/state")
+    @GetMapping(value = "/state", produces = MediaType.APPLICATION_JSON_VALUE)
     public Game currentState(@RequestHeader("X-SESSION-ID") String sessionId) {
-        log.info("Request to get state for sessionId: {}", sessionId);
+        log.info("Request for state of sessionId: {}", sessionId);
 
         return gamePlayService.getGame(sessionId);
+    }
+
+    @GetMapping(value = "/state", produces = MediaType.TEXT_PLAIN_VALUE)
+    public String currentStateText(@RequestHeader("X-SESSION-ID") String sessionId) {
+        log.info("Request to text state of sessionId: {}", sessionId);
+
+        return gamePlayService.getGameText(sessionId);
     }
 
     @GetMapping("/list")
