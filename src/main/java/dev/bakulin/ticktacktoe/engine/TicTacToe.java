@@ -4,10 +4,11 @@ import dev.bakulin.ticktacktoe.model.Actor;
 import org.springframework.stereotype.Service;
 
 @Service
-public class TicTacToeEngine {
+public class TicTacToe {
 
     public static final String EMPTY_FIELD = "123456789"; // field 3x3
     public static final String EMPTY_MOVES = "000000000"; // no any move
+    public static final String TIE = "tie";
 
     private String[] winCombos = new String[]{
             // rows
@@ -72,7 +73,7 @@ public class TicTacToeEngine {
         return String.valueOf(chars);
     }
 
-    private boolean occupied(int cell, String places) {
+    public boolean occupied(int cell, String places) {
         return '1' == places.charAt(cell);
     }
 

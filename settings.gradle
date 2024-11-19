@@ -1,2 +1,4 @@
 rootProject.name="ticktacktoe"
+include 'tictactoe-client'
+include 'api'
 

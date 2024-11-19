@@ -6,7 +6,7 @@
     "crossesMoves": "{crosses}",
     "zeroesMoves": "{zeroes}",
     "next": "{next}",
-    "lastGameWinner": "{winner}"
+    "winner": "{winner}"
   },
   "sides": {
     "host": "{host}",

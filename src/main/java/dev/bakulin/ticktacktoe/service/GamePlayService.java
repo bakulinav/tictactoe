@@ -2,7 +2,7 @@ package dev.bakulin.ticktacktoe.service;
 
 import dev.bakulin.ticktacktoe.dto.GameInitRequest;
 import dev.bakulin.ticktacktoe.dto.MoveRequest;
-import dev.bakulin.ticktacktoe.engine.TicTacToeEngine;
+import dev.bakulin.ticktacktoe.engine.TicTacToe;
 import dev.bakulin.ticktacktoe.exception.GameInactiveError;
 import dev.bakulin.ticktacktoe.exception.UnexpectedMoveError;
 import dev.bakulin.ticktacktoe.model.Actor;
@@ -20,18 +20,22 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Random;
 import java.util.UUID;
 
 @Slf4j
 @Service
 public class GamePlayService {
 
+    private static final int FINAL_ROUND = 9;
     private Map<String, Game> games = new HashMap<>();
 
-    final TicTacToeEngine engine;
+    private final TicTacToe engine;
+    private final Random brain;
 
-    public GamePlayService(TicTacToeEngine engine) {
+    public GamePlayService(TicTacToe engine) {
         this.engine = engine;
+        this.brain = new Random();
     }
 
     public Game init(GameInitRequest request) {
@@ -42,7 +46,10 @@ public class GamePlayService {
         Sides sides = Sides.initByGuest(guestSide);
 
         String session = UUID.randomUUID().toString();
-        Game game = Game.init(session, GameState.init(), sides);
+        Game game = Game.init(session, new GameState(), sides);
+
+        makeMyMove(game.getState(), game.getSides().getHost());
+
         save(game);
 
         return game;
@@ -59,7 +66,6 @@ public class GamePlayService {
 
         GameState state = game.getState();
         if (!state.getStatus().isActive()) {
-            // TODO intro own error model
             throw new GameInactiveError("Game " + sessionId + " is completed. Move can't be applied");
         }
 
@@ -68,24 +74,9 @@ public class GamePlayService {
             throw new UnexpectedMoveError(state.getNext());
         }
 
-        if (GameStatus.INIT.equals(state.getStatus())) {
-            state.setStatus(GameStatus.PLAYING);
-        }
-
-        String stateAfterMove = engine.applyMove(move.moveTo, move.moveBy, state.getCrossesMoves(), state.getZeroesMoves());
-        if (Actor.CROSS.equals(move.moveBy)) {
-            state.setCrossesMoves(stateAfterMove);
-            state.setNext(Actor.ZERO);
-        }else if (Actor.ZERO.equals(move.moveBy)) {
-            state.setZeroesMoves(stateAfterMove);
-            state.setNext(Actor.CROSS);
-        }
-
-        boolean winoCombo = engine.hasWin(stateAfterMove);
-        if (winoCombo) {
-            state.setStatus(GameStatus.FINISHED);
-            state.setLastGameWinner(move.moveBy.toString());
-        }
+        acceptMove(move, state);
+        // TODO move makeMyMove to a separate job
+        makeMyMove(state, game.getSides().getHost());
 
         String field = engine.evalField(state.getField(), state.getCrossesMoves(), state.getZeroesMoves());
         state.setField(field);
@@ -93,6 +84,68 @@ public class GamePlayService {
         save(game);
 
         return game;
+    }
+
+    private void makeMyMove(GameState gameState, Actor hostSide) {
+        if (hostSide.equals(gameState.getNext())) {
+            if (!gameState.getStatus().isActive()) {
+                log.info("Skip move, game is over");
+                return;
+            }
+
+            int place = findMove(gameState);
+            log.info("Make host move by {} to {}", hostSide, place);
+            String stateAfterMove = engine.applyMove(place, hostSide, gameState.getCrossesMoves(), gameState.getZeroesMoves());
+            recordAndSwitch(hostSide, gameState, stateAfterMove);
+
+            checkForComplete(hostSide, gameState, stateAfterMove);
+        }
+    }
+
+    private int findMove(GameState gameState) {
+        int guess;
+        do {
+            guess = brain.nextInt(0, 9);
+        } while (engine.occupied(guess, gameState.getCrossesMoves())
+                || engine.occupied(guess, gameState.getZeroesMoves()));
+        return guess + 1; // index to places
+    }
+
+    private void acceptMove(MoveRequest move, GameState state) {
+        if (!state.getStatus().isActive()) {
+            log.info("Skip move, game is over");
+            return;
+        }
+
+        log.info("Accept guest move by {} to {}", move.moveBy, move.moveTo);
+
+        String stateAfterMove = engine.applyMove(move.moveTo, move.moveBy, state.getCrossesMoves(), state.getZeroesMoves());
+        recordAndSwitch(move.moveBy, state, stateAfterMove);
+
+        checkForComplete(move.moveBy, state, stateAfterMove);
+    }
+
+    private void checkForComplete(Actor moveMadeBy, GameState state, String stateAfterMove) {
+
+        boolean winoCombo = engine.hasWin(stateAfterMove);
+        if (winoCombo) {
+            log.info("Winner is {}", moveMadeBy);
+            state.setStatus(GameStatus.FINISHED);
+            state.setWinner(moveMadeBy.toString());
+        } else if (state.getRounds() == FINAL_ROUND) {
+            state.setStatus(GameStatus.FINISHED);
+            state.setWinner(TicTacToe.TIE);
+        }
+    }
+
+    private void recordAndSwitch(Actor moveBy, GameState state, String movesLog) {
+        if (Actor.CROSS.equals(moveBy)) {
+            state.setCrossesMoves(movesLog);
+            state.setNext(Actor.ZERO);
+        } else if (Actor.ZERO.equals(moveBy)) {
+            state.setZeroesMoves(movesLog);
+            state.setNext(Actor.CROSS);
+        }
     }
 
     public Game getGame(String sessionId) {

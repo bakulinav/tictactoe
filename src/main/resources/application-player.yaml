@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: tictactoe-player
+
+server:
+  port: 8081
+
+gameserver:
+  host: localhost
+  port: 8080
+
+logging:
+  level:
+    org:
+      springframework:
+        web:
+          client:
+            RestTemplate: DEBUG
