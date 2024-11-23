@@ -1,6 +1,7 @@
 {
   "session": "ignore",
   "state": {
+    "rounds": {round},
     "status": "FINISHED",
     "field": "{field}",
     "crossesMoves": "{crosses}",

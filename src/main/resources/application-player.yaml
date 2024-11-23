@@ -1,7 +1,3 @@
-spring:
-  application:
-    name: tictactoe-player
-
 server:
   port: 8081
 
@@ -15,4 +11,4 @@ logging:
       springframework:
         web:
           client:
-            RestTemplate: DEBUG
+            RestTemplate: INFO

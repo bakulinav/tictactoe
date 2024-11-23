@@ -1,6 +1,6 @@
-spring:
-  application:
-    name: ticktacktoe
-
 server:
   port: 8080
+
+logging:
+  level:
+    root: INFO

@@ -1,7 +1,8 @@
 {
   "session": "ignore",
   "state": {
-    "status": "INIT",
+    "rounds": 0,
+    "status": "PLAYING",
     "field": "123456789",
     "crossesMoves": "000000000",
     "zeroesMoves": "000000000",

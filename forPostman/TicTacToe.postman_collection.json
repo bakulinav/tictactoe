@@ -1,0 +1,274 @@
+{
+	"info": {
+		"_postman_id": "6d4a4ee9-1b11-48e4-a382-ecc932247f4f",
+		"name": "TicTacToe",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "list games",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Successful GET request\", function () {",
+							"    pm.expect(pm.response.code).to.be.eq(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/gameplay/list",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"gameplay",
+						"list"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get state",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Successful GET request\", function () {",
+							"    pm.expect(pm.response.code).to.be.eq(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-SESSION-ID",
+						"value": "08fa746f-ae7d-46fb-8a0a-adc53797af5b",
+						"type": "default",
+						"disabled": true
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "default"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/gameplay/state/0f9f0bba-b59a-442a-8d65-79d89a1dada4",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"gameplay",
+						"state",
+						"0f9f0bba-b59a-442a-8d65-79d89a1dada4"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get state text",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Successful GET request\", function () {",
+							"    pm.expect(pm.response.code).to.be.eq(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-SESSION-ID",
+						"value": "08fa746f-ae7d-46fb-8a0a-adc53797af5b",
+						"type": "default",
+						"disabled": true
+					},
+					{
+						"key": "Accept",
+						"value": "text/plain",
+						"type": "default"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/gameplay/state/0f9f0bba-b59a-442a-8d65-79d89a1dada4",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"gameplay",
+						"state",
+						"0f9f0bba-b59a-442a-8d65-79d89a1dada4"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "init new game",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Successful POST request\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([201, 202]);",
+							"});",
+							"",
+							"// Parsing response body in JSON to js-object",
+							"var jsonData = JSON.parse(responseBody);",
+							"pm.collectionVariables.set(\"session\", jsonData.session);",
+							"pm.environment.set(\"session\", jsonData.session);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/gameplay/init",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"gameplay",
+						"init"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "make CROSS move",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Successful POST request\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([201, 202]);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-SESSION-ID",
+						"value": "{{session}}",
+						"type": "default",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"moveBy\": \"CROSS\",\n    \"moveTo\": 9\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/gameplay/move/{{session}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"gameplay",
+						"move",
+						"{{session}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "make ZERO move",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Successful POST request\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([201, 202]);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-SESSION-ID",
+						"value": "{{session}}",
+						"type": "default",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"moveBy\": \"ZERO\",\n    \"moveTo\": 8\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/gameplay/move/{{session}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"gameplay",
+						"move",
+						"{{session}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "session",
+			"value": ""
+		}
+	]
+}
